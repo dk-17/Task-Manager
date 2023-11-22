@@ -10,6 +10,6 @@ public class TaskEntity {
     private String title;
     private String description;
     private Date deadLine;
-    private boolean completed;
+    private Boolean completed;
 
 }
