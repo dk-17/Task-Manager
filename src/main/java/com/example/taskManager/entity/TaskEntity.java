@@ -12,5 +12,5 @@ public class TaskEntity {
     private String description;
     private Date deadLine;
     private Boolean completed;
-    //private List<NotesEntity> notes;
+    private List<NotesEntity> notes;
 }
