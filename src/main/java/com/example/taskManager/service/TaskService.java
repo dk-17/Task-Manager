@@ -35,9 +35,27 @@ public class TaskService {
     }
 
     public TaskEntity getTaskById(int id) {
-        return tasks.stream().findAny()
-                .filter(taskEntity -> taskEntity.getId() == id).orElse(null);
+        /*  Note:- findAny() using before filter method will not process next id after first data.
+        tasks.stream().findAny()
+              .filter(task ->{
+                  System.out.println("task id is - "+ task.getId());
+                  return task.getId() == id; }).orElse(null);
+         */
+
+        /*  this fillwork fine since findAny() used after filter method.
+        return tasks.stream()
+                .filter(taskEntity -> taskEntity.getId() == id)
+                .findAny()
+                .orElse(null);
+
+         */
+
+        return tasks.stream()
+              .filter(task -> task.getId() == id )
+                .findFirst().orElse(null);
+
 /*
+
         for(TaskEntity task : tasks) {
             if(task.getId() == id) {
                 return task;
@@ -45,9 +63,9 @@ public class TaskService {
         }
 
         return null;
-
- */
+*/
     }
+
 
     public TaskEntity updateTask(int id, String description, boolean completed) {
         TaskEntity task = getTaskById(id);

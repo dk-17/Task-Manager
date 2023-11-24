@@ -2,9 +2,13 @@ package com.example.taskManager.controller;
 
 import com.example.taskManager.dto.ErrorDTO;
 import com.example.taskManager.dto.TaskDTO;
+import com.example.taskManager.dto.TaskResponseDTO;
 import com.example.taskManager.dto.UpdateTaskDTO;
+import com.example.taskManager.entity.NotesEntity;
 import com.example.taskManager.entity.TaskEntity;
+import com.example.taskManager.service.NotesService;
 import com.example.taskManager.service.TaskService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +23,11 @@ public class TasksController {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private NotesService notesService;
+
+    private ModelMapper modelMapper = new ModelMapper();
+
     @GetMapping("")
     public ResponseEntity<List<TaskEntity>> getTasks() {
         List<TaskEntity> tasks =  taskService.getTasks();
@@ -26,12 +35,16 @@ public class TasksController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskEntity> getTask(@PathVariable("id") int id) {
+    public ResponseEntity<TaskResponseDTO> getTask(@PathVariable("id") int id) {
         TaskEntity task =  taskService.getTaskById(id);
+
+        List<NotesEntity> notes = notesService.getNotesForTask(id);
         if (task == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(task);
+        TaskResponseDTO taskResponse = modelMapper.map(task, TaskResponseDTO.class);
+        taskResponse.setNotes(notes);
+        return ResponseEntity.ok(taskResponse);
     }
 
     @PostMapping ("")
